@@ -8,19 +8,51 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 
 | Dependency | Version |
 |---|---|
-| PHP | `^8.2` |
-| Laravel | `^11.0 \| ^12.0 \| ^13.0` |
-| Carbon | `^3.0` |
+| PHP | `^8.1` |
+| Laravel | `^8.0 \| ^9.0 \| ^10.0 \| ^11.0 \| ^12.0 \| ^13.0` |
+| Carbon | `^2.0 \| ^3.0` |
 
 ---
 
 ## Installation
 
+### Step 1 — Install via Composer
+
 ```bash
 composer require naybala/laravel-mm-calendar
 ```
 
-The package is **auto-discovered** by Laravel — no manual service provider registration is needed.
+---
+
+### Step 2 — Service Provider (Auto-Discovery)
+
+Laravel **8.x and above** support package auto-discovery. The service provider and facade alias are registered automatically — **no further action is needed**.
+
+If auto-discovery is disabled in your project (i.e. the package is listed under `dont-discover` in `composer.json`), register manually in `config/app.php`:
+
+```php
+'providers' => [
+    // ...
+    Naybala\MMCalendar\MMCalendarServiceProvider::class,
+],
+
+'aliases' => [
+    // ...
+    'MMCalendar' => Naybala\MMCalendar\Facades\MMCalendar::class,
+],
+```
+
+---
+
+### Step 3 — Publish Calendar Data (Optional)
+
+The package ships with pre-built calendar data for supported years. If you want to customize or extend the data files, publish them to your application:
+
+```bash
+php artisan vendor:publish --tag=mm-calendar-data
+```
+
+This copies the JSON calendar files to `resources/mm-calendar/` in your project. The package will automatically use your local copies if they exist.
 
 ---
 
@@ -121,7 +153,7 @@ $day->toMmNumerals(7);     // "၇"
 
 ```php
 $day->label();    // "၁၃၈၈ ခုနှစ်၊ နယုန်လ ၇ ရက်"
-$day->labelEn();  // "7 Nayon 1388 ME"
+$day->labelEn();  // "7 Nayon 1388"
 ```
 
 ### Custom Format
@@ -146,8 +178,8 @@ $day->format('{year} ခုနှစ်၊ {month_mm}လ {day} ရက်');
 $day->format('{year_mm} ခုနှစ်၊ {month_mm}လ {day_mm} ရက်');
 // => "၁၃၈၈ ခုနှစ်၊ နယုန်လ ၇ ရက်"
 
-$day->format('{day} {month_en} {year} ME');
-// => "7 Nayon 1388 ME"
+$day->format('{day} {month_en} {year}');
+// => "7 Nayon 1388"
 ```
 
 ### Raw Array

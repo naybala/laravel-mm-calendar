@@ -10,4 +10,13 @@ class MMCalendarServiceProvider extends ServiceProvider
     {
         $this->app->singleton('mm-calendar', fn () => new MMCalendar());
     }
+
+    public function boot(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../resources/calendars' => resource_path('mm-calendar'),
+            ], 'mm-calendar-data');
+        }
+    }
 }
