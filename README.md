@@ -6,11 +6,11 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 
 ## Requirements
 
-| Dependency | Version |
-|---|---|
-| PHP | `^8.1` |
-| Laravel | `^8.0 \| ^9.0 \| ^10.0 \| ^11.0 \| ^12.0 \| ^13.0` |
-| Carbon | `^2.0 \| ^3.0` |
+| Dependency | Version                                            |
+| ---------- | -------------------------------------------------- |
+| PHP        | `^8.1`                                             |
+| Laravel    | `^8.0 \| ^9.0 \| ^10.0 \| ^11.0 \| ^12.0 \| ^13.0` |
+| Carbon     | `^2.0 \| ^3.0`                                     |
 
 ---
 
@@ -19,7 +19,7 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 ### Step 1 — Install via Composer
 
 ```bash
-composer require naybala/laravel-mm-calendar
+composer require naybala/laravel-mm-calendar:dev-main
 ```
 
 ---
@@ -160,16 +160,16 @@ $day->labelEn();  // "7 Nayon 1388"
 
 Use `{token}` placeholders:
 
-| Token | Output |
-|---|---|
-| `{year}` | `1388` |
-| `{month}` | `3` |
-| `{day}` | `7` |
-| `{month_mm}` | `နယုန်` |
-| `{month_en}` | `Nayon` |
-| `{year_mm}` | `၁၃၈၈` |
-| `{month_mm_num}` | `၃` |
-| `{day_mm}` | `၇` |
+| Token            | Output  |
+| ---------------- | ------- |
+| `{year}`         | `1388`  |
+| `{month}`        | `3`     |
+| `{day}`          | `7`     |
+| `{month_mm}`     | `နယုန်` |
+| `{month_en}`     | `Nayon` |
+| `{year_mm}`      | `၁၃၈၈`  |
+| `{month_mm_num}` | `၃`     |
+| `{day_mm}`       | `၇`     |
 
 ```php
 $day->format('{year} ခုနှစ်၊ {month_mm}လ {day} ရက်');
@@ -200,20 +200,20 @@ $day['mm_month'];   // 3
 
 ## Myanmar Month Reference
 
-| # | Myanmar | English |
-|---|---|---|
-| 1 | တန်ခူး | Tagu |
-| 2 | ကဆုန် | Kason |
-| 3 | နယုန် | Nayon |
-| 4 | ဝါဆို | Waso |
-| 5 | ဝါခေါင် | Wagaung |
-| 6 | တော်သလင်း | Tawthalin |
-| 7 | သီတင်းကျွတ် | Thadingyut |
-| 8 | တန်ဆောင်မုန်း | Tazaungmon |
-| 9 | နတ်တော် | Nadaw |
-| 10 | ပြာသို | Pyatho |
-| 11 | တပို့တွဲ | Tabodwe |
-| 12 | တပေါင်း | Tabaung |
+| #   | Myanmar       | English    |
+| --- | ------------- | ---------- |
+| 1   | တန်ခူး        | Tagu       |
+| 2   | ကဆုန်         | Kason      |
+| 3   | နယုန်         | Nayon      |
+| 4   | ဝါဆို         | Waso       |
+| 5   | ဝါခေါင်       | Wagaung    |
+| 6   | တော်သလင်း     | Tawthalin  |
+| 7   | သီတင်းကျွတ်   | Thadingyut |
+| 8   | တန်ဆောင်မုန်း | Tazaungmon |
+| 9   | နတ်တော်       | Nadaw      |
+| 10  | ပြာသို        | Pyatho     |
+| 11  | တပို့တွဲ      | Tabodwe    |
+| 12  | တပေါင်း       | Tabaung    |
 
 ---
 
@@ -240,8 +240,18 @@ Each file is a JSON object keyed by Gregorian date:
 
 ```json
 {
-    "2026-01-01": { "mm_year": 1387, "mm_month": 10, "mm_day": 14, "mm_index": 16654 },
-    "2026-01-02": { "mm_year": 1387, "mm_month": 10, "mm_day": 15, "mm_index": 16654 }
+  "2026-01-01": {
+    "mm_year": 1387,
+    "mm_month": 10,
+    "mm_day": 14,
+    "mm_index": 16654
+  },
+  "2026-01-02": {
+    "mm_year": 1387,
+    "mm_month": 10,
+    "mm_day": 15,
+    "mm_index": 16654
+  }
 }
 ```
 
