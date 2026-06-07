@@ -13,8 +13,8 @@
     "laravel",
     "myanmar",
     "calendar",
-    "mm-calendar",
-    "burmese",
+    "mm-calendar-laravel",
+    "burmese-calendar-laravel",
     "date-conversion"
   ],
   "autoload": {
