@@ -9,7 +9,7 @@ class MMCalendar
 {
     protected array $cache = [];
 
-    public function get(string|Carbon $date): ?array
+    public function get(string|Carbon $date): ?MMCalendarResult
     {
         if ($date instanceof Carbon) {
             $date = $date->format('Y-m-d');
@@ -19,26 +19,29 @@ class MMCalendar
 
         $data = $this->loadYear($year);
 
-        return $data[$date] ?? null;
+        return isset($data[$date]) ? new MMCalendarResult($data[$date]) : null;
     }
 
     /**
      * Convert one or more Gregorian dates to Myanmar calendar data.
      *
-     * - Single date (string or Carbon): returns ?array with mm_year, mm_month, mm_day, mm_index
-     * - Array of dates: returns array keyed by each date string, value is the same ?array per date
+     * - Single date (string|Carbon) → ?MMCalendarResult
+     * - Array of dates             → array<string, MMCalendarResult|null>
      *
      * Examples:
      *   MMCalendar::fromGregorian('2026-06-07');
-     *   // => ['mm_year' => 1388, 'mm_month' => 3, 'mm_day' => 7, 'mm_index' => ...]
+     *   MMCalendar::fromGregorian('2026-06-07')->toMm();   // "နယုန်"
+     *   MMCalendar::fromGregorian('2026-06-07')->toEn();   // "Nayon"
+     *   MMCalendar::fromGregorian('2026-06-07')->toArray();
+     *   MMCalendar::fromGregorian('2026-06-07')->mm_year;  // 1388
      *
      *   MMCalendar::fromGregorian(['2026-06-07', '2026-06-08']);
      *   // => [
-     *   //      '2026-06-07' => ['mm_year' => 1388, 'mm_month' => 3, 'mm_day' => 7,  ...],
-     *   //      '2026-06-08' => ['mm_year' => 1388, 'mm_month' => 3, 'mm_day' => 8,  ...],
+     *   //      '2026-06-07' => MMCalendarResult,
+     *   //      '2026-06-08' => MMCalendarResult,
      *   //    ]
      */
-    public function fromGregorian(string|Carbon|array $date): array|null
+    public function fromGregorian(string|Carbon|array $date): MMCalendarResult|array|null
     {
         if (is_array($date)) {
             return array_combine(
@@ -50,7 +53,7 @@ class MMCalendar
         return $this->get($date);
     }
 
-    public function today(): ?array
+    public function today(): ?MMCalendarResult
     {
         return $this->get(now());
     }

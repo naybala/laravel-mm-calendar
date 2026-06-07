@@ -16,8 +16,6 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 
 ## Installation
 
-Install via Composer:
-
 ```bash
 composer require naybala/laravel-mm-calendar
 ```
@@ -26,22 +24,24 @@ The package is **auto-discovered** by Laravel — no manual service provider reg
 
 ---
 
-## Usage
+## Basic Usage
 
 ### Via Facade
 
 ```php
 use Naybala\MMCalendar\Facades\MMCalendar;
 
-// Look up a specific date (string)
-$day = MMCalendar::get('2026-06-07');
+// Single date — returns MMCalendarResult (or null if not found)
+$day = MMCalendar::fromGregorian('2026-06-07');
 
-// Look up today's date
+// Today
 $today = MMCalendar::today();
 
-// Pass a Carbon instance
-$day = MMCalendar::get(now());
-$day = MMCalendar::get(Carbon::parse('2026-06-07'));
+// Carbon instance
+$day = MMCalendar::fromGregorian(Carbon::parse('2026-06-07'));
+
+// Low-level alias
+$day = MMCalendar::get('2026-06-07');
 ```
 
 ### Via Dependency Injection
@@ -55,12 +55,12 @@ class MyController extends Controller
 
     public function index()
     {
-        return $this->calendar->today();
+        return $this->calendar->today()->toArray();
     }
 }
 ```
 
-### Via Helper (app container)
+### Via App Container
 
 ```php
 $day = app('mm-calendar')->get('2026-06-07');
@@ -68,39 +68,130 @@ $day = app('mm-calendar')->get('2026-06-07');
 
 ---
 
-## Return Value
+## Batch / Array Lookup
 
-Each method returns an `array` for a matched date, or throws a `RuntimeException` if calendar data for the requested year is not available.
+Pass an array of dates to get results keyed by date string:
 
 ```php
-[
-    "gregorian_date" => "2026-06-07",
-    "mm_year"        => 1388,
-    "mm_month"       => 3,
-    "mm_day"         => 22,
-    "mm_index"       => 16811,
-]
+$days = MMCalendar::fromGregorian(['2026-06-07', '2026-06-08']);
+
+// => [
+//      '2026-06-07' => MMCalendarResult,
+//      '2026-06-08' => MMCalendarResult,
+//    ]
+
+$days['2026-06-07']->toMm();   // "နယုန်"
+$days['2026-06-08']->toEn();   // "Nayon"
 ```
 
-| Field | Type | Description |
+---
+
+## MMCalendarResult Methods
+
+Every single-date lookup returns an `MMCalendarResult` object.
+
+### Raw Field Getters
+
+```php
+$day = MMCalendar::fromGregorian('2026-06-07');
+
+$day->mmYear();   // 1388  (Myanmar Era year)
+$day->mmMonth();  // 3     (month number)
+$day->mmDay();    // 7     (day of month)
+$day->mmIndex();  // sequential day index
+```
+
+### Month Names
+
+```php
+$day->toMm();              // "နယုန်"     (Myanmar script)
+$day->toEn();              // "Nayon"     (English transliteration)
+$day->monthName();         // "နယုန်"     (default: Myanmar)
+$day->monthName('en');     // "Nayon"
+```
+
+### Myanmar Numerals
+
+```php
+$day->toMmNumerals(1388);  // "၁၃၈၈"
+$day->toMmNumerals(7);     // "၇"
+```
+
+### Formatted Labels
+
+```php
+$day->label();    // "၁၃၈၈ ခုနှစ်၊ နယုန်လ ၇ ရက်"
+$day->labelEn();  // "7 Nayon 1388 ME"
+```
+
+### Custom Format
+
+Use `{token}` placeholders:
+
+| Token | Output |
+|---|---|
+| `{year}` | `1388` |
+| `{month}` | `3` |
+| `{day}` | `7` |
+| `{month_mm}` | `နယုန်` |
+| `{month_en}` | `Nayon` |
+| `{year_mm}` | `၁၃၈၈` |
+| `{month_mm_num}` | `၃` |
+| `{day_mm}` | `၇` |
+
+```php
+$day->format('{year} ခုနှစ်၊ {month_mm}လ {day} ရက်');
+// => "1388 ခုနှစ်၊ နယုန်လ 7 ရက်"
+
+$day->format('{year_mm} ခုနှစ်၊ {month_mm}လ {day_mm} ရက်');
+// => "၁၃၈၈ ခုနှစ်၊ နယုန်လ ၇ ရက်"
+
+$day->format('{day} {month_en} {year} ME');
+// => "7 Nayon 1388 ME"
+```
+
+### Raw Array
+
+```php
+$day->toArray();
+// => ['mm_year' => 1388, 'mm_month' => 3, 'mm_day' => 7, 'mm_index' => 16811]
+```
+
+### Property & Array Access (Backward Compatible)
+
+```php
+$day->mm_year;      // 1388
+$day['mm_month'];   // 3
+```
+
+---
+
+## Myanmar Month Reference
+
+| # | Myanmar | English |
 |---|---|---|
-| `gregorian_date` | `string` | The Gregorian date (`Y-m-d`) |
-| `mm_year` | `int` | Myanmar Era year |
-| `mm_month` | `int` | Myanmar month number |
-| `mm_day` | `int` | Day of the Myanmar month |
-| `mm_index` | `int` | Sequential day index in the Myanmar calendar |
+| 1 | တန်ခူး | Tagu |
+| 2 | ကဆုန် | Kason |
+| 3 | နယုန် | Nayon |
+| 4 | ဝါဆို | Waso |
+| 5 | ဝါခေါင် | Wagaung |
+| 6 | တော်သလင်း | Tawthalin |
+| 7 | သီတင်းကျွတ် | Thadingyut |
+| 8 | တန်ဆောင်မုန်း | Tazaungmon |
+| 9 | နတ်တော် | Nadaw |
+| 10 | ပြာသို | Pyatho |
+| 11 | တပို့တွဲ | Tabodwe |
+| 12 | တပေါင်း | Tabaung |
 
 ---
 
 ## Error Handling
 
-If a calendar data file for the requested year does not exist, a `RuntimeException` is thrown:
+A `RuntimeException` is thrown when a calendar data file for the requested year does not exist:
 
 ```php
-use RuntimeException;
-
 try {
-    $day = MMCalendar::get('2030-01-01');
+    $day = MMCalendar::fromGregorian('2030-01-01');
 } catch (RuntimeException $e) {
     // "Myanmar calendar data for year 2030 is not available."
     logger()->warning($e->getMessage());
@@ -111,33 +202,24 @@ try {
 
 ## Adding Calendar Data
 
-Calendar data is stored as JSON files in:
+Calendar data is stored as JSON files in `resources/calendars/{year}_calendar.json`.
 
-```
-resources/calendars/{year}_calendar.json
-```
-
-Each file is a JSON array of daily entries:
+Each file is a JSON object keyed by Gregorian date:
 
 ```json
-[
-    {
-        "gregorian_date": "2026-01-01",
-        "mm_year": 1387,
-        "mm_month": 10,
-        "mm_day": 14,
-        "mm_index": 16654
-    }
-]
+{
+    "2026-01-01": { "mm_year": 1387, "mm_month": 10, "mm_day": 14, "mm_index": 16654 },
+    "2026-01-02": { "mm_year": 1387, "mm_month": 10, "mm_day": 15, "mm_index": 16654 }
+}
 ```
 
-To add support for a new year, simply add the corresponding `{year}_calendar.json` file to the `resources/calendars/` directory.
+To support a new year, add the corresponding `{year}_calendar.json` to the `resources/calendars/` directory.
 
 ---
 
 ## License
 
-This package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
 
 ---
 
