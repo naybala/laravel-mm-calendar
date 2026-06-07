@@ -1,0 +1,40 @@
+{
+  "name": "naybala/laravel-mm-calendar",
+  "description": "Myanmar Calendar Package for Laravel",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Naybala",
+      "role": "Developer"
+    }
+  ],
+  "keywords": [
+    "laravel",
+    "myanmar",
+    "calendar",
+    "mm-calendar",
+    "burmese",
+    "date-conversion"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Naybala\\MMCalendar\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Naybala\\MMCalendar\\MMCalendarServiceProvider"
+      ],
+      "aliases": {
+        "MMCalendar": "Naybala\\MMCalendar\\Facades\\MMCalendar"
+      }
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "illuminate/support": "^11.0|^12.0|^13.0",
+    "nesbot/carbon": "^3.0"
+  }
+}
