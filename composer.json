@@ -30,6 +30,9 @@
       "aliases": {
         "MMCalendar": "Naybala\\MMCalendar\\Facades\\MMCalendar"
       }
+    },
+    "branch-alias": {
+      "dev-main": "1.0-dev"
     }
   },
   "require": {
