@@ -85,6 +85,26 @@ class MMCalendar
         return "{$mm['year']}-{$monthName}-{$status}-{$displayDay}";
     }
 
+    /**
+     * Return array of labels for given Gregorian dates (safe for missing entries).
+     *
+     * @param array $dates Array of date strings (Y-m-d)
+     * @param bool $useBurmese If true returns Burmese label(), otherwise English labelEn()
+     * @param string|null $missingPlaceholder Value to use when date data is missing
+     * @return array
+     */
+    public function labelsFromGregorian(array $dates, bool $useBurmese = true, ?string $missingPlaceholder = 'missing date'): array
+    {
+        $results = $this->fromGregorian($dates);
+
+        return array_map(function ($item) use ($useBurmese, $missingPlaceholder) {
+            if ($item === null) {
+                return $missingPlaceholder;
+            }
+            return $useBurmese ? $item->label() : $item->labelEn();
+        }, $results);
+    }
+
     protected function loadYear(string $year): array
     {
         if (isset($this->cache[$year])) {
