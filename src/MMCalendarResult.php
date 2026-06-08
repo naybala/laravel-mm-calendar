@@ -1,5 +1,4 @@
 <?php
-
 namespace Naybala\MMCalendar;
 
 use ArrayAccess;
@@ -7,24 +6,25 @@ use ArrayAccess;
 class MMCalendarResult implements ArrayAccess
 {
     protected static array $mmMonths = [
-        1 => 'တန်ခူး',    2 => 'ကဆုန်',       3 => 'နယုန်',        4 => 'ဝါဆို',
-        5 => 'ဝါခေါင်',   6 => 'တော်သလင်း',   7 => 'သီတင်းကျွတ်', 8 => 'တန်ဆောင်မုန်း',
-        9 => 'နတ်တော်',   10 => 'ပြာသို',      11 => 'တပို့တွဲ',    12 => 'တပေါင်း',
+        1 => 'တန်ခူး', 2   => 'ကဆုန်', 3     => 'နယုန်', 4       => 'ဝါဆို',
+        5 => 'ဝါခေါင်', 6  => 'တော်သလင်း', 7 => 'သီတင်းကျွတ်', 8 => 'တန်ဆောင်မုန်း',
+        9 => 'နတ်တော်', 10 => 'ပြာသို', 11   => 'တပို့တွဲ', 12   => 'တပေါင်း',
     ];
 
     protected static array $mmMonthsEnglish = [
-        1 => 'Tagu',      2 => 'Kason',       3 => 'Nayon',       4 => 'Waso',
-        5 => 'Wagaung',   6 => 'Tawthalin',   7 => 'Thadingyut',  8 => 'Tazaungmon',
-        9 => 'Nadaw',     10 => 'Pyatho',     11 => 'Tabodwe',    12 => 'Tabaung',
+        1 => 'Tagu', 2    => 'Kason', 3     => 'Nayon', 4      => 'Waso',
+        5 => 'Wagaung', 6 => 'Tawthalin', 7 => 'Thadingyut', 8 => 'Tazaungmon',
+        9 => 'Nadaw', 10  => 'Pyatho', 11   => 'Tabodwe', 12   => 'Tabaung',
     ];
 
-    protected static array $mmNumerals = ['၀','၁','၂','၃','၄','၅','၆','၇','၈','၉'];
+    protected static array $mmNumerals = ['၀', '၁', '၂', '၃', '၄', '၅', '၆', '၇', '၈', '၉'];
 
     // -------------------------------------------------------------------------
     // Constructor
     // -------------------------------------------------------------------------
 
-    public function __construct(protected readonly array $data) {}
+    public function __construct(protected readonly array $data)
+    {}
 
     // -------------------------------------------------------------------------
     // Raw field getters
@@ -139,7 +139,9 @@ class MMCalendarResult implements ArrayAccess
      */
     public function label(): string
     {
-        return $this->format('{year_mm} ခုနှစ်၊ {month_mm}လ {day_mm} ရက်');
+        $phase   = $this->isWaxing() ? 'လဆန်း' : 'လဆုတ်';
+        $display = $this->displayDay();
+        return "{$this->toMmNumerals($this->data['mm_year'])} ခုနှစ်၊ {$this->toMm()} {$phase} ({$this->toMmNumerals($display)}) ရက်";
     }
 
     /**
@@ -150,7 +152,26 @@ class MMCalendarResult implements ArrayAccess
      */
     public function labelEn(): string
     {
-        return "{$this->data['mm_day']} {$this->toEn()} {$this->data['mm_year']}";
+        $phase   = $this->isWaxing() ? 'Waxing' : 'Waning';
+        $display = $this->displayDay();
+        return "{$display} {$this->toEn()} {$this->data['mm_year']} ({$phase})";
+    }
+
+    // -------------------------------------------------------------------------
+    // Waxing / Waning helpers
+    // -------------------------------------------------------------------------
+
+    /** True when day is 1–15 (Waxing) */
+    public function isWaxing(): bool
+    {
+        return ($this->data['mm_day'] ?? 0) <= 15;
+    }
+
+    /** Display day within the waxing/waning cycle (1–15) */
+    public function displayDay(): int
+    {
+        $d = $this->data['mm_day'] ?? 0;
+        return $d <= 15 ? $d : ($d - 15);
     }
 
     // -------------------------------------------------------------------------
@@ -165,7 +186,7 @@ class MMCalendarResult implements ArrayAccess
     public function toMmNumerals(int $number): string
     {
         return implode('', array_map(
-            fn ($d) => static::$mmNumerals[(int) $d],
+            fn($d) => static::$mmNumerals[(int) $d],
             str_split((string) $number)
         ));
     }
