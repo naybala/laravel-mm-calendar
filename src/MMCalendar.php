@@ -101,7 +101,16 @@ class MMCalendar
         }
 
         // JSON is already keyed by gregorian_date — decode directly.
-        return $this->cache[$year] = json_decode(file_get_contents($file), true);
+        $data = json_decode(file_get_contents($file), true);
+
+        foreach ($data as &$dayData) {
+            if (isset($dayData['mm_day']) && $dayData['mm_day'] > 15) {
+                $dayData['mm_day'] -= 15;
+            }
+        }
+        unset($dayData); // Unset reference to avoid unexpected side effects
+
+        return $this->cache[$year] = $data;
     }
 
     protected function toMyanmarNumber(int $number): string
