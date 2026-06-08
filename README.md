@@ -19,7 +19,7 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 ### Step 1 — Install via Composer
 
 ```bash
-composer require naybala/laravel-mm-calendar:^1.0
+composer require naybala/laravel-mm-calendar:^1.1
 ```
 
 ---
