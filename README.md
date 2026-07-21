@@ -1,6 +1,6 @@
 # Laravel MM Calendar
 
-A simple and elegant Laravel package for converting Gregorian dates to **Myanmar Calendar** data.
+A simple and elegant Laravel package for converting Gregorian dates to **Myanmar Calendar** data(currently available for 2026-2028).
 
 ---
 
@@ -19,7 +19,7 @@ A simple and elegant Laravel package for converting Gregorian dates to **Myanmar
 ### Step 1 — Install via Composer
 
 ```bash
-composer require naybala/laravel-mm-calendar:^1.2
+composer require naybala/laravel-mm-calendar:^1.3
 ```
 
 ---
